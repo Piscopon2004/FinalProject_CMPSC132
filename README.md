@@ -1,1 +1,1 @@
-# FinalProject_CMPSC132
+# Number Guessing Game
