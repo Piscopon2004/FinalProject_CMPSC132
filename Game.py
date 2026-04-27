@@ -1,84 +1,74 @@
 import random
 
-# Prompt user to choose a difficulty level
-def choose_difficulty():
-    print("Choose difficulty:")
-    print("1. Easy (1-50)")
-    print("2. Medium (1-100)")
-    print("3. Hard (1-200)")
+# Let the player pick a difficulty level
+def select_level():
+    print("\nSelect a difficulty level:")
+    print("1) Easy   -> range 1 to 50")
+    print("2) Medium -> range 1 to 100")
+    print("3) Hard   -> range 1 to 200")
 
-    choice = input("Enter Choice: ")
+    user_choice = input("Your choice: ").strip().lower()
 
-    # Choice logic
-    if choice == "1" or choice == "Easy" or choice == "easy":
+    if user_choice in ["1", "easy"]:
         return 1, 50
-    elif choice == "2" or choice == "Medium" or choice == "medium":
+    elif user_choice in ["2", "medium"]:
         return 1, 100
-    elif choice == "3" or choice == "Hard" or choice == "hard":
+    elif user_choice in ["3", "hard"]:
         return 1, 200
     else:
-        print("Invalid Choice. Medium difficulty defaulted")
+        print("Invalid choice. Defaulting to Medium.")
         return 1, 100
 
 
-# Prompt user until a valid integer is entered
-def get_valid_guess(min_val, max_val):
-    valid = False
-
-    while not valid:
-        guess = input(f"Enter your guess ({min_val} - {max_val}): ")
+# Keep asking until a valid number is entered
+def read_guess(low, high):
+    while True:
+        user_input = input(f"Guess a number between {low} and {high}: ")
 
         try:
-            guess = int(guess)
+            value = int(user_input)
 
-            if min_val <= guess <= max_val:
-                valid = True
+            if low <= value <= high:
+                return value
             else:
-                print(f"Please enter a number between {min_val} and {max_val}.")
+                print("That number is out of range.")
 
         except ValueError:
-            print("Invalid input. Please enter a number.")
-
-    return guess
+            print("Please enter a valid integer.")
 
 
-# Game logic
-def play_game():
-    print("Welcome to the Number Guessing Game!")
+# Runs one full round of the game
+def run_round():
+    print("\n=== Number Guessing Game ===")
 
-    min_val, max_val = choose_difficulty()
-    number = random.randint(min_val, max_val)
-    attempts = 0
-    guessed_correctly = False
+    low, high = select_level()
+    secret_number = random.randint(low, high)
 
-    while not guessed_correctly:
-        guess = get_valid_guess(min_val, max_val)
-        attempts += 1
+    tries = 0
 
-        if guess > number:
-            print("Too high!")
-        elif guess < number:
-            print("Too low!")
+    while True:
+        guess = read_guess(low, high)
+        tries += 1
+
+        if guess < secret_number:
+            print("Too low — go higher.")
+        elif guess > secret_number:
+            print("Too high — go lower.")
         else:
-            print("Correct! Congratulations!")
-            print(f"You guessed it in {attempts} attempts.")
-            guessed_correctly = True
+            print(f"Nice! You got it in {tries} tries.")
+            break
 
 
-# Control replay
+# Main loop to replay the game
 def main():
-    play_again = True
+    while True:
+        run_round()
 
-    while play_again:
-        play_game()
+        again = input("Play again? (y/n): ").strip().lower()
 
-        response = input("Do you want to play again? (Yes/No): ").lower()
-
-        if response == "yes" or response == "y":
-            play_again = True
-        else:
-            play_again = False
-            print("Thanks for playing!")
+        if again not in ["y", "yes"]:
+            print("Goodbye!")
+            break
 
 
 if __name__ == "__main__":
